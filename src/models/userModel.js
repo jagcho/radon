@@ -29,9 +29,7 @@ const mongoose = require('mongoose');
 
 // String, Number
 // Boolean, Object/json, array
-
-
-
+//ASSIGNMENT STARTS BELOW
 const bookSchema = new mongoose.Schema({
   BookName:  String, // String is shorthand for {type: String}
   authorName: String,
