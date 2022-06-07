@@ -16,9 +16,9 @@ const booklist= async function (req, res) {
  }
 
  const getBooksinYear= async function (req, res) {
-    let data= req.body
+    let data= req.body.year;
     // console.log(data)
-    let allBooks= await BookModel.find(data)
+    let allBooks= await BookModel.find({year:data})
 
     res.send({msg: allBooks})
  }
@@ -30,17 +30,17 @@ const booklist= async function (req, res) {
     res.send({msg: allBooks})
  }
  const getINRBooks= async function (req, res) {
-    let allBooks= await BookModel.find({prices : "200INR" })
+    let allBooks= await BookModel.find({"prices.indianPrice" :{$in:["100INR","200INR","500INR"]}} );
 
     res.send({msg: allBooks})
  }
  const getRandomBooks= async function (req, res) {
-    //let allBooks= await BookModel.find({  stockAvailable : true})//.count()
-    let allBooks= await BookModel.find({   totalPages: { $gt:  500}})//.count()
+    let allBooks= await BookModel.find({$or :[{  stockAvailable : true}, {   totalPages: { $gt:  500}}]});
+    //let allBooks= await BookModel.find({   totalPages: { $gt:  500}}).count()
 
     res.send({msg: allBooks})
  }
-    //let allBooks= await BookModel.find( { authorName : "Chetan Bhagat" , isPublished: true  } ) // AND
+   // let allBooks= await BookModel.find( { authorName : "Chetan Bhagat" , isPublished: true  } ) // AND
     
     // let allBooks= await BookModel.find( { 
     //   $or: [ {authorName : "Chetan Bhagat" } , { isPublished: true } , {  "year": 1991 }]
