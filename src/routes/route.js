@@ -40,18 +40,20 @@ router.get('/candidates', function(req, res){
     let candidates = ['Akash','Suman']
     res.send(candidates)
 })
-router.get('/movies', function(req, res){
+router.get('/movies/:index', function(req, res){
+    const value=req.params.index
+    console.log(value)
     let movies=['KGF','RRR ','Pushpa','the Marvels']
-    res.send(movies)
+    res.send(movies[value])
 })
 router.get('/candidates/:canidatesName', function(req, res){
     console.log('The request objects is '+ JSON.stringify(req.params))
     console.log('Candidates name is '+req.params.canidatesName)
     res.send('Done')
 })
-router.get('/movies/2', function(req, res){
+router.get('/movies', function(req, res){
     let movies=['KGF','RRR','Pushpa','the Marvels']
-    res.send(movies[1])
+    res.send(movies)
 })
 
 router.get('/movies/5', function(req, res){
