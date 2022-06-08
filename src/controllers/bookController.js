@@ -16,28 +16,44 @@ const authorBook= async function (req, res) {
 const getBooksbyChetanBhagat= async function (req, res) {
     let data=await authorModel.find({author_name:"Chetan Bhagat"}).select({author_id:1,_id:0})
     console.log(data)
-    let booklist= await BookModel.find({author_id:data.author_id})
+    let booklist= await BookModel.find({author_id:data[0].author_id})
     res.send({msg: booklist})
 }
 const authorOfBook= async function (req, res) {
     let data= await BookModel.findOneAndUpdate({name:"Two states"},{$set:{prices:100}},{new:true})
-    let authordata=await authorModel.find({author_id:data[0].author_id}).select({author_name :1, _id:0})
+    let authordata=await authorModel.find({author_id:data.author_id}).select({author_name :1, _id:0})
     let price=data.prices
     res.send({msg: authordata,price})
 }
-// const getBooksData= async function (req, res) {
-//     let allBooks= await BookModel.find( {authorName : "HO" } )
-//     console.log(allBooks)
-//     if (allBooks.length > 0 )  res.send({msg: allBooks, condition: true})
-//     else res.send({msg: "No books found" , condition: false})
-// }
+const getBooksData= async function (req, res) {
+    let allBooks= await BookModel.find( {authorName : "HO" } )
+    console.log(allBooks)
+    if (allBooks.length > 0 )  res.send({msg: allBooks, condition: true})
+    else res.send({msg: "No books found" , condition: false})
+}
 
 const booksBetween50_100= async function (req, res) {
     
- let books= await BookModel.find( { price : { $gte: 50, $lte: 100} }).select({author_id :1, _id:0})
+ let books= await BookModel.find( { prices : { $gte: 50, $lte: 100} }).select({author_id :1, _id:0})
  let authorname= await authorModel.find({author_id:books.map(x=>x.author_id)}).select({author_name :1,_id:0})
-console.log(authorname)
+console.log(books)
 res.send({msg:authorname})
+}
+
+const booksByAuthorId =async function (req, res) {
+const value=req.params.id;
+let books =await BookModel.find({author_id:value}).select({name:1,_id:0})
+res.send({msg:books})
+}
+
+const authorByAge=async function (req, res) {
+let age= await authorModel.find({age : {$gt: 50}}).select({author_id:1,author_name:1,age:1,_id:0});
+console.log(age)
+let rating=await BookModel.find({ratings : {$gt:4}})
+//console.log(rating)
+let result = age.filter(one => rating
+                .find(two => one.author_id==two.author_id));
+res.send({msg:result})
 }
 
 const updateBooks= async function (req, res) {
@@ -86,3 +102,5 @@ module.exports.authorBook=authorBook
 module.exports.getBooksbyChetanBhagat=getBooksbyChetanBhagat
 module.exports.authorOfBook=authorOfBook
 module.exports.booksBetween50_100=booksBetween50_100
+module.exports.booksByAuthorId= booksByAuthorId
+module.exports.authorByAge=authorByAge
