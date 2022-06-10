@@ -56,28 +56,17 @@ const createBook= async function (req, res) {
 
 // }//4th api
 
-// const books=async function (req, res) {
-//     let data=req.body
-//     let books= await bookModel.UpdateMany( 
-//         { publiser:"62a1beb64104c136a296a617"},
-//          { $set :data},    
-//          { new:true,upsert:true}               
-//     )  
-//         res.send({msg:books})
-// }
 const books=async function (req, res) {
     let data=req.body
-    let books= await bookModel.UpdateMany( 
-        { publiser:"62a1beb64104c136a296a617"},
-         { $set :data},    
-         { new:true,upsert:true}               
-    )  
-        res.send({msg:books})
+    let books= await bookModel.find().populate(['author','publiser'])
+     finalBooks=[]
+     for(let i=0;i<books.length;i++){
+        if(book[i].publisherId.name)
+     }   
+
+
+
 }
-
-
-
-
 module.exports.createBook= createBook
 module.exports.books=books
 // module.exports.getBooksData= getBooksData
