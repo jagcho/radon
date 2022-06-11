@@ -14,7 +14,7 @@ router.post("/NewPublisher", pubController.NewPublisher)
 
 router.post("/createBook", bookController.createBook)
 
-router.put("/books",pubController.books)
+router.put("/books",bookController.books)
 
 //router.get("/getBooksData", bookController.getBooksData)
 

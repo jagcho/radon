@@ -57,16 +57,28 @@ const createBook= async function (req, res) {
 // }//4th api
 
 const books=async function (req, res) {
-    let data=req.body
     let books= await bookModel.find().populate(['author','publiser'])
      finalBooks=[]
      for(let i=0;i<books.length;i++){
-        if(book[i].publisherId.name)
+        if(books[i].publiser.name == 'Penguin' ||books[i].publiser.name =='HarperCollins'){
+            let updateBook=await bookModel.findOneAndUpdate({name:books[i].name},{$set:{isHardCover:true}})
+            finalBooks.push(updateBook)
+          // console.log(updateBook)
+        }
+        // else{
+        //   let  updateBook="not match"
+        //     console.log(updateBook)
+        // }
+        if(books[i].author.rating>3.5){
+            let updatedBook = await bookModel.findOneAndUpdate({name:books[i].name},{$set: {price:books[i].price+10}})
+            finalBooks.push(updatedBook)
+        }
      }   
+       res.send({msg:finalBooks})
+    }//5th api
 
 
 
-}
 module.exports.createBook= createBook
 module.exports.books=books
 // module.exports.getBooksData= getBooksData
