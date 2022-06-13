@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzotr.mongodb.net/Pritesh8769811-DB?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://Jagcho:71nEXJtXcYfVx8T6@cluster0.5bg4mzz.mongodb.net/JAGDISHorder", {
     useNewUrlParser: true
 })
 .then( () => console.log("MongoDb is connected"))
@@ -16,16 +16,17 @@ mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzot
 
 
 
-app.use('/', route);
+//app.use('/', route);
 
 app.use (
     function (req, res, next) {
         console.log ("inside GLOBAL MW");
-        res.send({msg:"done"})
+       // res.send({msg:"done"})
+        next()
   }
   );
 
-
+ app.use('/', route);
 app.listen(process.env.PORT || 3000, function () {
     console.log('Express app running on port ' + (process.env.PORT || 3000))
 });
