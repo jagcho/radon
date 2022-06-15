@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController= require("../controllers/userController")
+const commonMW = require ("../middleware/commonMiddlewares")
 
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
@@ -12,9 +13,9 @@ router.post("/login", userController.loginUser)
 
 //The userId is sent by front end
 router.get("/users/:userId", userController.getUserData)
-router.post("/users/:userId/posts", userController.postMessage)
+router.post("/users/:userId/posts",commonMW.mid1,commonMW.mid2,userController.postMessage)
 
-router.put("/users/:userId", userController.updateUser)
-router.delete('/users/:userId', userController.deleteUser)
+router.put("/users/:userId",commonMW.mid1,commonMW.mid2 ,userController.updateUser)
+router.delete('/users/:userId',commonMW.mid1,commonMW.mid2 , userController.deleteUser)
 
 module.exports = router;
