@@ -16,22 +16,22 @@ else res.status(400).send({ msg: "BAD REQUEST"})
 }
   catch (err) {
     console.log("This is the error :", err.message)
-    res.status(400).send({ msg: "Error", error: err.message })
+    res.status(500).send({ msg: "Error", error: err.message })
 }
 };
 
-const loginUser = async function (req, res) {
-    try {  
+const loginUser = async function (req, res) { 
+  try {  
   let userName = req.body.emailId;
   let password = req.body.password;
   let user = await userModel.findOne({ emailId: userName, password: password });
   if (!user)
-    return res.send({status: false,msg: "username or the password is not corerct",
+    return res.status(400).send({status: false,msg: "username or the password is not corerct",
     });
     }
     catch (err) {
         console.log("This is the error :", err.message)
-        res.status(400).send({ msg: "Error", error: err.message })
+        res.status(500).send({ msg: "Error", error: err.message })
     }
   // Once the login is successful, create the jwt token with sign function
   // Sign function has 2 inputs:
@@ -54,11 +54,11 @@ const loginUser = async function (req, res) {
 const getUserData = async function (req, res) {
   // let token = req.headers["x-Auth-token"];
   // if (!token) token = req.headers["x-auth-token"];
-
-  //If no token is present in the request header return error
-  // if (!token) return res.send({ status: false, msg: "token must be present" });
-
   // console.log(token);
+  // //If no token is present in the request header return error
+  // if (!token) return res.status(401).send({ status: false, msg: "token must be present" });
+
+  
   
   // If a token is present then decode the token with verify function
   // verify takes two inputs:
@@ -67,18 +67,26 @@ const getUserData = async function (req, res) {
   // Check the value of the decoded token yourself
   // let decodedToken = jwt.verify(token, "functionup-radon");
   // if (!decodedToken)
-  //   return res.send({ status: false, msg: "token is invalid" });
-  try {  
+  //   return res.status(401).send({ status: false, msg: "token is invalid" });
+
+
+  //   let userToBeModified = req.params.userId
+  //   //userId for the logged-in user
+  //   let userLoggedIn = decodedToken.userId
+
+  //   //userId comparision to check if the logged-in user is requesting for their own data
+  //   if(userToBeModified != userLoggedIn) return res.status(403).send({status: false, msg: 'User logged is not allowed to modify the requested users data'})
+  try { 
   let userId = req.params.userId;
   let userDetails = await userModel.findById(userId);
   if (!userDetails)
-    return res.send({ status: false, msg: "No such user exists" });
+    return res.status(404).send({ status: false, msg: "No such user exists" });
 
   res.send({ status: true, data: userDetails });
   }
   catch (err) {
     console.log("This is the error :", err.message)
-    res.status(400).send({ msg: "Error", error: err.message })
+    res.status(500).send({ msg: "Error", error: err.message })
 }
 
 };
@@ -100,15 +108,19 @@ try {
   // console.log(token);
   //Return an error if no user with the given id exists in the db
   if (!user) {
-    return res.send("No such user exists");
+    return res.status(400).send("No such user exists");
   }
   // let decodedToken = jwt.verify(token, "functionup-radon");
   // if (!decodedToken)
   //   return res.send({ status: false, msg: "token is invalid" });
 
-  let userData = req.body;
+  //let userData = req.body;
+  let updatedPosts = user.posts
+  //add the message to user's posts
+  updatedPosts.push(message)
+
   let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
-  res.send({ status: updatedUser, data: updatedUser });
+  res.status(200).send({ status: updatedUser, data: updatedUser });
 }
 catch (err) {
     console.log("This is the error :", err.message)
@@ -130,7 +142,7 @@ const deleteUser = async function (req, res) {
   // console.log(token);
   //Return an error if no user with the given id exists in the db
   if (!userId) {
-    return res.send("No such user exists");
+    return res.status(400).send("No such user exists");
   }
   // let decodedToken = jwt.verify(token, "functionup-radon");
   // if (!decodedToken)
@@ -139,11 +151,11 @@ const deleteUser = async function (req, res) {
     // const deleteUser = async function (req, res) {
  
   let updatedUser = await userModel.findByIdAndUpdate({ _id: userId },{isDeleted:true},{new:true});
-  res.send({ status:true, data: updatedUser });
+  res.status(200).send({ status:true, data: updatedUser });
 }
 catch (err) {
     console.log("This is the error :", err.message)
-    res.status(400).send({ msg: "Error", error: err.message })
+    res.status(500).send({ msg: "Error", error: err.message })
 }
 
 
