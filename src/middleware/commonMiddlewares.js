@@ -18,6 +18,8 @@ const authenticate = function(req, req, next) {
 
 
 const authorise = function(req, res, next) {
+let token = req.headers["x-Auth-token"] || req.headers["x-auth-token"]; 
+let decodedToken = jwt.verify(token, "functionup-radon");
     let userToBeModified = req.params.userId
     let userLoggedIn = decodedToken.userId
 
