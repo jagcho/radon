@@ -1,27 +1,38 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 
-const createUser = async function (abcd, xyz) {
+const createUser = async function (abcd, res) {
   //You can name the req, res objects anything.
   //but the first parameter is always the request 
   //the second parameter is always the response
+  try {
   let data = abcd.body;
+  if ( Object.keys(data).length != 0) {
   let savedData = await userModel.create(data);
-  console.log(abcd.newAtribute);
-  xyz.send({ msg: savedData });
+  res.status(201).send({ msg: savedData })
+ // console.log(abcd.newAtribute);
+}
+else res.status(400).send({ msg: "BAD REQUEST"})
+}
+  catch (err) {
+    console.log("This is the error :", err.message)
+    res.status(400).send({ msg: "Error", error: err.message })
+}
 };
 
 const loginUser = async function (req, res) {
+    try {  
   let userName = req.body.emailId;
   let password = req.body.password;
-
   let user = await userModel.findOne({ emailId: userName, password: password });
   if (!user)
-    return res.send({
-      status: false,
-      msg: "username or the password is not corerct",
+    return res.send({status: false,msg: "username or the password is not corerct",
     });
-
+    }
+    catch (err) {
+        console.log("This is the error :", err.message)
+        res.status(400).send({ msg: "Error", error: err.message })
+    }
   // Once the login is successful, create the jwt token with sign function
   // Sign function has 2 inputs:
   // Input 1 is the payload or the object containing data to be set in token
@@ -57,13 +68,19 @@ const getUserData = async function (req, res) {
   // let decodedToken = jwt.verify(token, "functionup-radon");
   // if (!decodedToken)
   //   return res.send({ status: false, msg: "token is invalid" });
-
+  try {  
   let userId = req.params.userId;
   let userDetails = await userModel.findById(userId);
   if (!userDetails)
     return res.send({ status: false, msg: "No such user exists" });
 
   res.send({ status: true, data: userDetails });
+  }
+  catch (err) {
+    console.log("This is the error :", err.message)
+    res.status(400).send({ msg: "Error", error: err.message })
+}
+
 };
 
 const updateUser = async function (req, res) {
@@ -71,7 +88,7 @@ const updateUser = async function (req, res) {
 // Check if the token is present
 // Check if the token present is a valid token
 // Return a different error message in both these cases
-
+try {  
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
   // let token = req.headers["x-Auth-token"];
@@ -92,9 +109,16 @@ const updateUser = async function (req, res) {
   let userData = req.body;
   let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
   res.send({ status: updatedUser, data: updatedUser });
+}
+catch (err) {
+    console.log("This is the error :", err.message)
+    res.status(400).send({ msg: "Error", error: err.message })
+}
+
 };
 
 const deleteUser = async function (req, res) {
+    try {  
   let userId=req.params.userId
   //let user = await userModel.findById(userId)
   // let token = req.headers["x-Auth-token"];
@@ -116,6 +140,13 @@ const deleteUser = async function (req, res) {
  
   let updatedUser = await userModel.findByIdAndUpdate({ _id: userId },{isDeleted:true},{new:true});
   res.send({ status:true, data: updatedUser });
+}
+catch (err) {
+    console.log("This is the error :", err.message)
+    res.status(400).send({ msg: "Error", error: err.message })
+}
+
+
 };
 
 
